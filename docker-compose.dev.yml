@@ -1,0 +1,55 @@
+version: '3.8'
+name: chatapp-dev
+services:
+  mongo:
+    image: mongo:6.0.4-jammy
+    restart: always
+    volumes:
+      - ../mongo-data:/data/db
+    env_file:
+      - ../mongo/.env
+
+  mongo-express:
+    image: mongo-express:latest
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - 8081:8081
+    env_file:
+      - ../mongo-express/.env
+
+  chatapp-ui:
+    depends_on:
+      - chatapp-api
+    build:
+      context: ../chatapp-ui
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ../chatapp-ui:/app
+    env_file:
+      - ../chatapp-ui/.env.development
+
+  chatapp-api:
+    depends_on:
+      - mongo
+    build:
+      context: ../chatapp-api
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ../chatapp-api:/app
+    env_file:
+      - ../chatapp-api/.env.development
+
+  chatapp-gateway:
+    depends_on:
+      - chatapp-api
+      - chatapp-ui
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - '3000:80'
