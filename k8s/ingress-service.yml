@@ -2,6 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-service
+  annotations:
+    ingress.gcp.kubernetes.io/pre-shared-cert: chatapp-certificate
 spec:
   rules:
     - host: clucas.app
