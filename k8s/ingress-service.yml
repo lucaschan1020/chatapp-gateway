@@ -4,7 +4,8 @@ metadata:
   name: ingress-service
 spec:
   rules:
-    - http:
+    - host: clucas.app
+      http:
         paths:
           - path: /
             pathType: Prefix
