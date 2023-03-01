@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-service
+spec:
+  rules:
+    - host: clucas.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: chatapp-ui-cluster-ip-service
+                port:
+                  number: 3000
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: chatapp-api-cluster-ip-service
+                port:
+                  number: 5000
+          - path: /socket.io
+            pathType: Prefix
+            backend:
+              service:
+                name: chatapp-api-cluster-ip-service
+                port:
+                  number: 5000
+  tls:
+    - hosts:
+        - clucas.dev
+        - www.clucas.dev
+        - db.clucas.dev
+      secretName: tls-secret
