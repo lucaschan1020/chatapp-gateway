@@ -4,6 +4,8 @@ services:
   mongo:
     image: mongo:6.0.4-jammy
     restart: always
+    ports:
+      - 27017:27017
     volumes:
       - ../mongo-data:/data/db
     env_file:
@@ -34,12 +36,15 @@ services:
   chatapp-api:
     depends_on:
       - mongo
+    restart: on-failure
     build:
       context: ../chatapp-api
       dockerfile: Dockerfile.dev
     volumes:
       - /app/node_modules
       - ../chatapp-api:/app
+    ports:
+      - 9229:9229
     env_file:
       - ../chatapp-api/.env.development
 
