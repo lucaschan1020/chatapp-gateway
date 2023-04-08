@@ -22,19 +22,21 @@ services:
   chatapp-ui:
     depends_on:
       - chatapp-api
-    build:
-      context: ../chatapp-ui
-      dockerfile: Dockerfile
-      args:
-        REACT_APP_GAPI_CLIENTID: ${GAPI_CLIENTID}
+    image: ghcr.io/lucaschan1020/chatapp-ui:1.4.1
+    # build:
+    #   context: ../chatapp-ui
+    #   dockerfile: Dockerfile
+    #   args:
+    #     REACT_APP_GAPI_CLIENTID: ${GAPI_CLIENTID}
     
   chatapp-api:
     depends_on:
       - mongo
     restart: on-failure
-    build:
-      context: ../chatapp-api
-      dockerfile: Dockerfile
+    image: ghcr.io/lucaschan1020/chatapp-api:1.4.1
+    # build:
+    #   context: ../chatapp-api
+    #   dockerfile: Dockerfile
     env_file:
       - ../chatapp-api/.env.production
 
@@ -43,8 +45,13 @@ services:
       - chatapp-api
       - chatapp-ui
     restart: always
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/lucaschan1020/chatapp-gateway:1.4.1
+    volumes:
+      - ./certs:/etc/nginx/certs
+      - ./conf/default.conf:/etc/nginx/conf.d/default.conf
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     ports:
-      - '80:80'
+      - 80:80
+      - 443:443
